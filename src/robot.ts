@@ -1,5 +1,14 @@
 const validDirections = ["NORTH", "EAST", "SOUTH", "WEST"];
-const placeError = "PLACE command invalid";
+const placementError = "PLACE command invalid";
+const commandError = "COMMAND invalid";
+
+class RobotError {
+  message: string;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}
 
 export class Robot {
   commands: string[];
@@ -23,7 +32,21 @@ export class Robot {
       this.validate();
       this.cycleCommands();
     } catch (err) {
-      this.errMessage = placeError;
+      const robotError = err as RobotError;
+      this.errMessage = robotError.message;
+    }
+  }
+  validateInputCoords() {
+    if (this.coords.length < 1) {
+      throw new RobotError(placementError);
+    }
+
+    var decimalRegExp = /^\d+$/;
+
+    const [x, y] = this.coords;
+
+    if (!x.match(decimalRegExp) || !y.match(decimalRegExp)) {
+      throw new RobotError(placementError);
     }
   }
 
@@ -34,29 +57,20 @@ export class Robot {
     this.direction = direction;
   }
 
-  validateAxis() {
-    var decimalRegExp = /^\d+$/;
-    const [x, y] = this.coords;
-
-    if (!x.match(decimalRegExp) || !y.match(decimalRegExp)) {
-      throw new Error(placeError);
-    }
-  }
-
   validateAxisRange() {
     if (this.x < 0 || this.x > 4 || this.y < 0 || this.y > 4) {
-      throw new Error(placeError);
+      throw new RobotError(placementError);
     }
   }
 
   validateDirection() {
     if (!validDirections.includes(this.direction)) {
-      throw new Error(placeError);
+      throw new RobotError(placementError);
     }
   }
 
   validate() {
-    this.validateAxis();
+    this.validateInputCoords();
     this.setCoords();
     this.validateAxisRange();
     this.validateDirection();
@@ -88,7 +102,7 @@ export class Robot {
         this.report();
         break;
       default:
-        throw new Error("Command invalid");
+        throw new RobotError(commandError);
     }
   }
 
@@ -136,6 +150,9 @@ export class Robot {
 
   place(): string[] {
     const placeCommand = this.commands[0].split(" ");
+    if (placeCommand[0] !== "PLACE") {
+      return [];
+    }
     if (placeCommand.length > 1) {
       return placeCommand[1].split(",");
     }

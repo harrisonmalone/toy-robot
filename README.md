@@ -1,6 +1,6 @@
 # Toy Robot
 
-This is a Toy Robot application that runs in the browser. It accepts input in a `textarea` and returns coordinates based on where the robot was instructed to move.
+This is a [Toy Robot](https://zone.github.io/frontend/toy-robot) application that runs in the browser. It accepts input in a `textarea` and returns coordinates based on where the robot was instructed to move.
 
 Input should be provided in the following format:
 
