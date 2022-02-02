@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Robot } from "./robot";
 
 function App() {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+
+  function initializeRobot(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const robot = new Robot(input);
+    if (robot.errMessage) {
+    }
+    setOutput(robot.errMessage ? robot.errMessage : robot.report());
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+      <h2>Input</h2>
+      <form onSubmit={initializeRobot}>
+        <textarea
+          name="input"
+          style={{
+            resize: "none",
+            height: "400px",
+            width: "100%",
+            fontSize: "20px",
+            fontFamily: "sans-serif",
+          }}
+          placeholder={"PLACE 0,0,NORTH\nMOVE\nREPORT"}
+          onChange={(e) => setInput(e.target.value)}
+          value={input}
+        ></textarea>
+        <input type="submit" value="Submit" />
+      </form>
+      <h2>Output</h2>
+      <h1>{output}</h1>
     </div>
   );
 }
